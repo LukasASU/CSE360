@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.time.*;
 
 import entityClasses.User;
 
@@ -121,7 +122,7 @@ public class Database {
 	    String invitationCodesTable = "CREATE TABLE IF NOT EXISTS InvitationCodes ("
 	            + "code VARCHAR(10) PRIMARY KEY, "
 	    		+ "emailAddress VARCHAR(255), "
-	            + "role VARCHAR(10))";
+	            + "role VARCHAR(10), exp VARCHAR(15))";
 	    statement.execute(invitationCodesTable);
 	}
 
@@ -418,12 +419,18 @@ public class Database {
 	// Generates a new invitation code and inserts it into the database.
 	public String generateInvitationCode(String emailAddress, String role) {
 	    String code = UUID.randomUUID().toString().substring(0, 6); // Generate a random 6-character code
-	    String query = "INSERT INTO InvitationCodes (code, emailaddress, role) VALUES (?, ?, ?)";
+	    int day = LocalDateTime.now().getDayOfYear() + 1;
+	    int hour = LocalDateTime.now().getHour();
+	    String expiration = day+"/"+hour;
+	    String query = "INSERT INTO InvitationCodes (code, emailaddress, role, exp) VALUES (?, ?, ?, ?)";
+
+	    // I am all powerful I am now able to gain the TIME MUAHAHAHAHA
 
 	    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
 	        pstmt.setString(1, code);
 	        pstmt.setString(2, emailAddress);
 	        pstmt.setString(3, role);
+	        pstmt.setString(4, expiration);
 	        pstmt.executeUpdate();
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -508,7 +515,19 @@ public class Database {
 	    return "";
 	}
 
-	
+	public String getExpirationGivenAnInvitationCode(String code) {
+		String query = "SELECT * FROM InvitationCodes WHERE code = ?";
+		try (PreparedStatement pstmt = connection.prepareStatement(query)){
+			pstmt.setString(1, code);
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next()) {
+				return rs.getString("exp");
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
 	/*******
 	 * <p> Method: String getEmailAddressUsingCode (String code ) </p>
 	 * 

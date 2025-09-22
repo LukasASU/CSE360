@@ -70,7 +70,7 @@ public class ControllerAdminHome {
 		String invitationCode = theDatabase.generateInvitationCode(emailAddress,
 				theSelectedRole);
 		String msg = "Code: " + invitationCode + " for role " + theSelectedRole + 
-				" was sent to: " + emailAddress;
+				" was sent to: " + emailAddress + "\n" + "Code expires in 24 hours";
 		System.out.println(msg);
 		ViewAdminHome.alertEmailSent.setContentText(msg);
 		ViewAdminHome.alertEmailSent.showAndWait();
