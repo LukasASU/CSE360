@@ -243,6 +243,7 @@ public class Database {
 		return userList;
 	}
 	
+	//new function implemented by Randy
 	public List<User> getUserListFull() {
 	    List<User> users = new ArrayList<>();
 	    String query = "SELECT * FROM userDB";
@@ -270,6 +271,21 @@ public class Database {
 
 	    return users;
 	}
+	
+	//new function Michael
+    public boolean deleteUser(String emailAddress) {
+        try {
+            String query = "DELETE FROM userDB WHERE emailAddress = ?";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setString(1, emailAddress);
+            int rows = ps.executeUpdate();
+            ps.close();
+            return rows > 0;   // true if at least one row deleted
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 /*******
  * <p> Method: boolean loginAdmin(User user) </p>

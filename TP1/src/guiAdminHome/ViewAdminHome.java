@@ -159,26 +159,27 @@ public class ViewAdminHome {
 	 * 
 	 */
 	public static void displayAdminHome(Stage ps, User user) {
-		
 		// Establish the references to the GUI and the current user
-		theStage = ps;
-		theUser = user;
-		
-		// If not yet established, populate the static aspects of the GUI
-		if (theView == null) theView = new ViewAdminHome();		// Instantiate singleton if needed
-		
-		// Populate the dynamic aspects of the GUI with the data from the user and the current
-		// state of the system.
-		theDatabase.getUserAccountDetails(user.getUserName());		// Fetch this user's data
-		applicationMain.FoundationsMain.activeHomePage = theRole;	// Set this as the active Home																	// UserUpdate page
+	    theStage = ps;
+	    theUser = user;
 
-		// Set the role for potential users to the default (No role selected)
-		combobox_SelectRole.getSelectionModel().select(0);
-				
-		// Set the title for the window, display the page, and wait for the Admin to do something
-		theStage.setTitle("CSE 360 Foundation Code: Admin Home Page");
-		theStage.setScene(theAdminHomeScene);						// Set this page onto the stage
-		theStage.show();											// Display it to the user
+	    // If not yet established, populate the static aspects of the GUI
+	    if (theView == null) theView = new ViewAdminHome();
+
+	    // Populate the dynamic aspects of the GUI with the data from the user and the current state
+	    theDatabase.getUserAccountDetails(user.getUserName());
+	    applicationMain.FoundationsMain.activeHomePage = theRole;
+
+	    //Update the dynamic label each time
+	    label_UserDetails.setText("User: " + theUser.getUserName());
+
+	    // Set the role for potential users to the default (No role selected)
+	    combobox_SelectRole.getSelectionModel().select(0);
+
+	    // Set the title for the window, display the page, and wait for the Admin to do something
+	    theStage.setTitle("CSE 360 Foundation Code: Admin Home Page");
+	    theStage.setScene(theAdminHomeScene);
+	    theStage.show();										// Display it to the user
 	}
 	
 	/**********

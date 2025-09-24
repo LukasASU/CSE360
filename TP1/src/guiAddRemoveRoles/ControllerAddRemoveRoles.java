@@ -1,5 +1,6 @@
 package guiAddRemoveRoles;
 
+import javafx.scene.control.Alert;
 import database.Database;
 import javafx.collections.FXCollections;
 import javafx.geometry.Pos;
@@ -209,25 +210,37 @@ public class ControllerAddRemoveRoles {
 	 * 
 	 */
 	protected static void performRemoveRole() {
-		
-		// Determine which item in the ComboBox list was selected
-		ViewAddRemoveRoles.theRemoveRole = (String) ViewAddRemoveRoles.
-				combobox_SelectRoleToRemove.getValue();
-		
-		// If the selection is the list header (e.g., "<Select a role>") don't do anything
-		if (ViewAddRemoveRoles.theRemoveRole.compareTo("<Select a role>") != 0) {
-			
-			// If an actual role was selected, update the database entry for that user for the role
-			if (theDatabase.updateUserRole(ViewAddRemoveRoles.theSelectedUser, 
-					ViewAddRemoveRoles.theRemoveRole, "false") ) {
-				ViewAddRemoveRoles.combobox_SelectRoleToRemove = new ComboBox <String>();
-				ViewAddRemoveRoles.combobox_SelectRoleToRemove.setItems(FXCollections.
-					observableArrayList(ViewAddRemoveRoles.addList));
-				ViewAddRemoveRoles.combobox_SelectRoleToRemove.getSelectionModel().
-					clearAndSelect(0);		
-				setupSelectedUser();
-			}				
-		}
+	    ViewAddRemoveRoles.theRemoveRole =
+	            (String) ViewAddRemoveRoles.combobox_SelectRoleToRemove.getValue();
+
+	    if (!ViewAddRemoveRoles.theRemoveRole.equals("<Select a role>")) {
+
+	       //prevents admin from deleting himself
+	        if (ViewAddRemoveRoles.theRemoveRole.equals("Admin") &&
+	            ViewAddRemoveRoles.theSelectedUser.equals(ViewAddRemoveRoles.theUser.getUserName())) {
+	            
+	            // Console message (optional)
+	            System.out.println("Admins cannot remove their own Admin role!");
+
+	            // Popup alert
+	            Alert alert = new Alert(Alert.AlertType.WARNING);
+	            alert.setTitle("Role Removal Blocked");
+	            alert.setHeaderText("Action Not Allowed");
+	            alert.setContentText("You cannot remove your own Admin role.");
+	            alert.showAndWait();
+
+	            return;
+	        }
+
+	        if (theDatabase.updateUserRole(ViewAddRemoveRoles.theSelectedUser,
+	                ViewAddRemoveRoles.theRemoveRole, "false")) {
+	            ViewAddRemoveRoles.combobox_SelectRoleToRemove = new ComboBox<String>();
+	            ViewAddRemoveRoles.combobox_SelectRoleToRemove.setItems(FXCollections.
+	                observableArrayList(ViewAddRemoveRoles.addList));
+	            ViewAddRemoveRoles.combobox_SelectRoleToRemove.getSelectionModel().clearAndSelect(0);
+	            setupSelectedUser();
+	        }
+	    }
 	}
 	
 	

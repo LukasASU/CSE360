@@ -316,14 +316,39 @@ public class ViewUserUpdate {
         setupLabelUI(label_EmailAddress, "Arial", 18, 190, Pos.BASELINE_RIGHT, 5, 400);
         setupLabelUI(label_CurrentEmailAddress, "Arial", 18, 260, Pos.BASELINE_LEFT, 200, 400);
         setupButtonUI(button_UpdateEmailAddress, "Dialog", 18, 275, Pos.CENTER, 500, 393);
-        button_UpdateEmailAddress.setOnAction((event) -> {result = dialogUpdateEmailAddresss.showAndWait();
-    		result.ifPresent(name -> theDatabase.updateEmailAddress(theUser.getUserName(), result.get()));
-    		theDatabase.getUserAccountDetails(theUser.getUserName());
-    		String newEmail = theDatabase.getCurrentEmailAddress();
-           	theUser.setEmailAddress(newEmail);
-        	if (newEmail == null || newEmail.length() < 1)label_CurrentEmailAddress.setText("<none>");
-        	else label_CurrentEmailAddress.setText(newEmail);
- 			});
+        
+        
+        button_UpdateEmailAddress.setOnAction((event) -> {
+            result = dialogUpdateEmailAddresss.showAndWait();
+            result.ifPresent(email -> {
+                // Run FSM validation
+                String validationResult = guiTools.EmailAddressRecognizer.checkEmailAddress(email.trim());
+
+                if (!validationResult.isEmpty()) {
+                    // Show error popup
+                    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+                        javafx.scene.control.Alert.AlertType.ERROR
+                    );
+                    alert.setTitle("Invalid Email");
+                    alert.setHeaderText("Please correct the email address");
+                    alert.setContentText(validationResult);
+                    alert.showAndWait();
+                    return; // stop here, don’t update DB
+                }
+
+                // If valid → update
+                theDatabase.updateEmailAddress(theUser.getUserName(), email.trim());
+                theDatabase.getUserAccountDetails(theUser.getUserName());
+                String newEmail = theDatabase.getCurrentEmailAddress();
+                theUser.setEmailAddress(newEmail);
+
+                if (newEmail == null || newEmail.length() < 1) {
+                    label_CurrentEmailAddress.setText("<none>");
+                } else {
+                    label_CurrentEmailAddress.setText(newEmail);
+                }
+            });
+        });
         
         // Set up the button to proceed to this user's home page
         setupButtonUI(button_ProceedToUserHomePage, "Dialog", 18, 300, 

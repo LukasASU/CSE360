@@ -2,6 +2,9 @@ package guiAdminHome;
 
 import database.Database;
 import entityClasses.User;
+import javafx.scene.control.TextInputDialog;
+import java.util.Optional;
+import guiTools.EmailAddressRecognizer;
 
 /*******
  * <p> Title: GUIAdminHomePage Class. </p>
@@ -122,11 +125,57 @@ public class ControllerAdminHome {
 	 * this function has not yet been implemented. </p>
 	 */
 	protected static void deleteUser() {
-		System.out.println("\n*** WARNING ***: Delete User Not Yet Implemented");
-		ViewAdminHome.alertNotImplemented.setTitle("*** WARNING ***");
-		ViewAdminHome.alertNotImplemented.setHeaderText("Delete User Issue");
-		ViewAdminHome.alertNotImplemented.setContentText("Delete User Not Yet Implemented");
-		ViewAdminHome.alertNotImplemented.showAndWait();
+		// Ask for the email in a simple input dialog
+	    TextInputDialog dialog = new TextInputDialog();
+	    dialog.setTitle("Delete User");
+	    dialog.setHeaderText("Delete a User Account");
+	    dialog.setContentText("Enter the email address of the user to delete:");
+
+	    Optional<String> result = dialog.showAndWait();
+	    if (result.isPresent()) {
+	        String email = result.get().trim();
+
+	        if (invalidEmailAddress(email)) {
+	            return; // already shows an error alert
+	        }
+
+	        //admin cant delete his own account
+	        if (ViewAdminHome.theUser != null && email.equalsIgnoreCase(ViewAdminHome.theUser.getEmailAddress())) {
+	            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+	            alert.setTitle("Delete User Error");
+	            alert.setHeaderText("Operation Not Allowed");
+	            alert.setContentText("You cannot delete your own account while logged in as admin.");
+	            alert.showAndWait();
+	            return;
+	        }
+
+	        //asking are your sure?
+	        javafx.scene.control.Alert confirmAlert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION);
+	        confirmAlert.setTitle("Confirm Deletion");
+	        confirmAlert.setHeaderText("Delete User?");
+	        confirmAlert.setContentText("Are you sure you want to delete the user with email:\n\n" + email);
+
+	        Optional<javafx.scene.control.ButtonType> confirmation = confirmAlert.showAndWait();
+
+	        if (confirmation.isPresent() && confirmation.get() == javafx.scene.control.ButtonType.OK) {
+	            boolean success = theDatabase.deleteUser(email);
+
+	            if (success) {
+	                ViewAdminHome.alertEmailSent.setContentText(
+	                    "User with email " + email + " was successfully deleted."
+	                );
+	                ViewAdminHome.alertEmailSent.showAndWait();
+	            } else {
+	                ViewAdminHome.alertEmailError.setContentText(
+	                    "No user found with email " + email + "."
+	                );
+	                ViewAdminHome.alertEmailError.showAndWait();
+	            }
+	        } else {
+	            // User cancelled deletion
+	            System.out.println("Deletion cancelled by admin.");
+	        }
+	    }
 	}
 	
 	/**********
@@ -138,50 +187,6 @@ public class ControllerAdminHome {
 	 * this function has not yet been implemented. </p>
 	 */
 	protected static void listUsers() {
-		/*
-		try {
-	        // Get list of User objects from the database
-	        java.util.List<User> users = theDatabase.getUserListFull(); // This should return List<User>
-	        
-	        if (users == null || users.isEmpty()) {
-	            ViewAdminHome.alertNotImplemented.setTitle("User List");
-	            ViewAdminHome.alertNotImplemented.setHeaderText("No Users Found");
-	            ViewAdminHome.alertNotImplemented.setContentText("There are currently no users in the system.");
-	            ViewAdminHome.alertNotImplemented.showAndWait();
-	            return;
-	        }
-
-	        // Build a string with all user details
-	        StringBuilder userList = new StringBuilder();
-	        for (User user : users) {
-	            userList.append("Username: ").append(user.getUserName())
-	                    .append(", Email: ").append(user.getEmailAddress())
-	                    .append(", Name: ").append(user.getPreferredFirstName())
-	                    .append(" ").append(user.getLastName())
-	                    .append(", Roles: ");
-	            
-	            if (user.getAdminRole()) userList.append("Admin ");
-	            if (user.getNewRole1()) userList.append("Role1 ");
-	            if (user.getNewRole2()) userList.append("Role2 ");
-	            
-	            userList.append("\n");
-	        }
-
-	        // Show the users in an alert
-	        ViewAdminHome.alertNotImplemented.setTitle("User List");
-	        ViewAdminHome.alertNotImplemented.setHeaderText("Current Users");
-	        ViewAdminHome.alertNotImplemented.setContentText(userList.toString());
-	        ViewAdminHome.alertNotImplemented.showAndWait();
-
-	    } catch (Exception e) {
-	        System.out.println("\n*** ERROR ***: Unable to list users");
-	        e.printStackTrace();
-	        ViewAdminHome.alertNotImplemented.setTitle("*** ERROR ***");
-	        ViewAdminHome.alertNotImplemented.setHeaderText("Database Issue");
-	        ViewAdminHome.alertNotImplemented.setContentText("Unable to retrieve user list.");
-	        ViewAdminHome.alertNotImplemented.showAndWait();
-	    }
-		*/
 		
 		try {
 	        // Get list of User objects from the database
@@ -199,16 +204,22 @@ public class ControllerAdminHome {
 	        StringBuilder userList = new StringBuilder();
 	        for (User user : users) {
 	            userList.append("Username: ").append(user.getUserName())
-	                    .append(", Email: ").append(user.getEmailAddress())
-	                    .append(", Name: ").append(user.getPreferredFirstName())
-	                    .append(" ").append(user.getLastName())
-	                    .append(", Roles: ");
-	            
+	                    .append("\nEmail: ").append(user.getEmailAddress())
+	                    .append("\nName: ").append(user.getFirstName())
+	                    .append(" ").append(user.getLastName());
+
+	            // Only add preferred name line if it exists
+	            if (user.getPreferredFirstName() != null && !user.getPreferredFirstName().isEmpty()) {
+	                userList.append("\nPreferred Name: ").append(user.getPreferredFirstName());
+	            }
+
+	            // Roles
+	            userList.append("\nRoles: ");
 	            if (user.getAdminRole()) userList.append("Admin ");
 	            if (user.getNewRole1()) userList.append("Role1 ");
 	            if (user.getNewRole2()) userList.append("Role2 ");
-	            
-	            userList.append("\n");
+
+	            userList.append("\n\n\n\n\n");
 	        }
 
 	        // Create a scrollable TextArea to display the users
@@ -269,13 +280,17 @@ public class ControllerAdminHome {
 	 * @param emailAddress	This String holds what is expected to be an email address
 	 */
 	protected static boolean invalidEmailAddress(String emailAddress) {
-		if (emailAddress.length() == 0) {
-			ViewAdminHome.alertEmailError.setContentText(
-					"Correct the email address and try again.");
-			ViewAdminHome.alertEmailError.showAndWait();
-			return true;
-		}
-		return false;
+	    // Call the FSM recognizer
+	    String errorMsg = EmailAddressRecognizer.checkEmailAddress(emailAddress);
+
+	    if (!errorMsg.isEmpty()) {
+	        // Show recognizer’s detailed message
+	        ViewAdminHome.alertEmailError.setContentText(errorMsg);
+	        ViewAdminHome.alertEmailError.showAndWait();
+	        return true; // invalid
+	    }
+
+	    return false; // valid
 	}
 	
 	/**********
