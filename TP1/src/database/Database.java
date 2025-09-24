@@ -1,4 +1,8 @@
 <<<<<<< HEAD:TP1/src/database/Database.java
+<<<<<<< HEAD:TP1/src/database/Database.java
+=======
+<<<<<<< HEAD
+>>>>>>> 8cf6477 (what):TP1/TP1 Source Code/TP1 Base code/src/database/Database.java
 package database;
 
 import java.sql.*;
@@ -9,6 +13,10 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+<<<<<<< HEAD:TP1/src/database/Database.java
+=======
+import java.time.*;
+>>>>>>> 8cf6477 (what):TP1/TP1 Source Code/TP1 Base code/src/database/Database.java
 
 import entityClasses.User;
 
@@ -122,7 +130,11 @@ public class Database {
 	    String invitationCodesTable = "CREATE TABLE IF NOT EXISTS InvitationCodes ("
 	            + "code VARCHAR(10) PRIMARY KEY, "
 	    		+ "emailAddress VARCHAR(255), "
+<<<<<<< HEAD:TP1/src/database/Database.java
 	            + "role VARCHAR(10))";
+=======
+	            + "role VARCHAR(10), exp VARCHAR(15))";
+>>>>>>> 8cf6477 (what):TP1/TP1 Source Code/TP1 Base code/src/database/Database.java
 	    statement.execute(invitationCodesTable);
 	}
 
@@ -244,7 +256,10 @@ public class Database {
 		return userList;
 	}
 	
+<<<<<<< HEAD:TP1/src/database/Database.java
 	//new function implemented by Randy
+=======
+>>>>>>> 8cf6477 (what):TP1/TP1 Source Code/TP1 Base code/src/database/Database.java
 	public List<User> getUserListFull() {
 	    List<User> users = new ArrayList<>();
 	    String query = "SELECT * FROM userDB";
@@ -272,6 +287,7 @@ public class Database {
 
 	    return users;
 	}
+<<<<<<< HEAD:TP1/src/database/Database.java
 	
 	//new function Michael
     public boolean deleteUser(String emailAddress) {
@@ -287,6 +303,8 @@ public class Database {
             return false;
         }
     }
+=======
+>>>>>>> 8cf6477 (what):TP1/TP1 Source Code/TP1 Base code/src/database/Database.java
 
 /*******
  * <p> Method: boolean loginAdmin(User user) </p>
@@ -435,12 +453,25 @@ public class Database {
 	// Generates a new invitation code and inserts it into the database.
 	public String generateInvitationCode(String emailAddress, String role) {
 	    String code = UUID.randomUUID().toString().substring(0, 6); // Generate a random 6-character code
+<<<<<<< HEAD:TP1/src/database/Database.java
 	    String query = "INSERT INTO InvitationCodes (code, emailaddress, role) VALUES (?, ?, ?)";
+=======
+	    int day = LocalDateTime.now().getDayOfYear() + 1;
+	    int hour = LocalDateTime.now().getHour();
+	    String expiration = day+"/"+hour;
+	    String query = "INSERT INTO InvitationCodes (code, emailaddress, role, exp) VALUES (?, ?, ?, ?)";
+
+	    // I am all powerful I am now able to gain the TIME MUAHAHAHAHA
+>>>>>>> 8cf6477 (what):TP1/TP1 Source Code/TP1 Base code/src/database/Database.java
 
 	    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
 	        pstmt.setString(1, code);
 	        pstmt.setString(2, emailAddress);
 	        pstmt.setString(3, role);
+<<<<<<< HEAD:TP1/src/database/Database.java
+=======
+	        pstmt.setString(4, expiration);
+>>>>>>> 8cf6477 (what):TP1/TP1 Source Code/TP1 Base code/src/database/Database.java
 	        pstmt.executeUpdate();
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -525,7 +556,23 @@ public class Database {
 	    return "";
 	}
 
+<<<<<<< HEAD:TP1/src/database/Database.java
 	
+=======
+	public String getExpirationGivenAnInvitationCode(String code) {
+		String query = "SELECT * FROM InvitationCodes WHERE code = ?";
+		try (PreparedStatement pstmt = connection.prepareStatement(query)){
+			pstmt.setString(1, code);
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next()) {
+				return rs.getString("exp");
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+>>>>>>> 8cf6477 (what):TP1/TP1 Source Code/TP1 Base code/src/database/Database.java
 	/*******
 	 * <p> Method: String getEmailAddressUsingCode (String code ) </p>
 	 * 
@@ -2196,4 +2243,8 @@ public class Database {
 		} 
 	}
 }
+<<<<<<< HEAD:TP1/src/database/Database.java
 >>>>>>> cc8a1ad (hope this don't break it):TP1/TP1 Source Code/TP1 Base code/src/database/Database.java
+=======
+>>>>>>> main
+>>>>>>> 8cf6477 (what):TP1/TP1 Source Code/TP1 Base code/src/database/Database.java

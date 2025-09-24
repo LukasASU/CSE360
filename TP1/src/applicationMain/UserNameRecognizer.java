@@ -534,4 +534,8 @@ public class UserNameRecognizer {
 		}
 	}
 }
+<<<<<<< HEAD:TP1/src/applicationMain/UserNameRecognizer.java
 >>>>>>> cc8a1ad (hope this don't break it):TP1/TP1 Source Code/TP1 Base code/src/applicationMain/UserNameRecognizer.java
+=======
+>>>>>>> main
+>>>>>>> 8cf6477 (what):TP1/TP1 Source Code/TP1 Base code/src/applicationMain/UserNameRecognizer.java

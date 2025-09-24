@@ -1,11 +1,18 @@
 <<<<<<< HEAD:TP1/src/guiAdminHome/ControllerAdminHome.java
+<<<<<<< HEAD:TP1/src/guiAdminHome/ControllerAdminHome.java
+=======
+<<<<<<< HEAD
+>>>>>>> 8cf6477 (what):TP1/TP1 Source Code/TP1 Base code/src/guiAdminHome/ControllerAdminHome.java
 package guiAdminHome;
 
 import database.Database;
 import entityClasses.User;
+<<<<<<< HEAD:TP1/src/guiAdminHome/ControllerAdminHome.java
 import javafx.scene.control.TextInputDialog;
 import java.util.Optional;
 import guiTools.EmailAddressRecognizer;
+=======
+>>>>>>> 8cf6477 (what):TP1/TP1 Source Code/TP1 Base code/src/guiAdminHome/ControllerAdminHome.java
 
 /*******
  * <p> Title: GUIAdminHomePage Class. </p>
@@ -74,7 +81,11 @@ public class ControllerAdminHome {
 		String invitationCode = theDatabase.generateInvitationCode(emailAddress,
 				theSelectedRole);
 		String msg = "Code: " + invitationCode + " for role " + theSelectedRole + 
+<<<<<<< HEAD:TP1/src/guiAdminHome/ControllerAdminHome.java
 				" was sent to: " + emailAddress;
+=======
+				" was sent to: " + emailAddress + "\n" + "Code expires in 24 hours";
+>>>>>>> 8cf6477 (what):TP1/TP1 Source Code/TP1 Base code/src/guiAdminHome/ControllerAdminHome.java
 		System.out.println(msg);
 		ViewAdminHome.alertEmailSent.setContentText(msg);
 		ViewAdminHome.alertEmailSent.showAndWait();
@@ -126,6 +137,7 @@ public class ControllerAdminHome {
 	 * this function has not yet been implemented. </p>
 	 */
 	protected static void deleteUser() {
+<<<<<<< HEAD:TP1/src/guiAdminHome/ControllerAdminHome.java
 		// Ask for the email in a simple input dialog
 	    TextInputDialog dialog = new TextInputDialog();
 	    dialog.setTitle("Delete User");
@@ -177,6 +189,13 @@ public class ControllerAdminHome {
 	            System.out.println("Deletion cancelled by admin.");
 	        }
 	    }
+=======
+		System.out.println("\n*** WARNING ***: Delete User Not Yet Implemented");
+		ViewAdminHome.alertNotImplemented.setTitle("*** WARNING ***");
+		ViewAdminHome.alertNotImplemented.setHeaderText("Delete User Issue");
+		ViewAdminHome.alertNotImplemented.setContentText("Delete User Not Yet Implemented");
+		ViewAdminHome.alertNotImplemented.showAndWait();
+>>>>>>> 8cf6477 (what):TP1/TP1 Source Code/TP1 Base code/src/guiAdminHome/ControllerAdminHome.java
 	}
 	
 	/**********
@@ -188,6 +207,53 @@ public class ControllerAdminHome {
 	 * this function has not yet been implemented. </p>
 	 */
 	protected static void listUsers() {
+<<<<<<< HEAD:TP1/src/guiAdminHome/ControllerAdminHome.java
+=======
+		/*
+		try {
+	        // Get list of User objects from the database
+	        java.util.List<User> users = theDatabase.getUserListFull(); // This should return List<User>
+	        
+	        if (users == null || users.isEmpty()) {
+	            ViewAdminHome.alertNotImplemented.setTitle("User List");
+	            ViewAdminHome.alertNotImplemented.setHeaderText("No Users Found");
+	            ViewAdminHome.alertNotImplemented.setContentText("There are currently no users in the system.");
+	            ViewAdminHome.alertNotImplemented.showAndWait();
+	            return;
+	        }
+
+	        // Build a string with all user details
+	        StringBuilder userList = new StringBuilder();
+	        for (User user : users) {
+	            userList.append("Username: ").append(user.getUserName())
+	                    .append(", Email: ").append(user.getEmailAddress())
+	                    .append(", Name: ").append(user.getPreferredFirstName())
+	                    .append(" ").append(user.getLastName())
+	                    .append(", Roles: ");
+	            
+	            if (user.getAdminRole()) userList.append("Admin ");
+	            if (user.getNewRole1()) userList.append("Role1 ");
+	            if (user.getNewRole2()) userList.append("Role2 ");
+	            
+	            userList.append("\n");
+	        }
+
+	        // Show the users in an alert
+	        ViewAdminHome.alertNotImplemented.setTitle("User List");
+	        ViewAdminHome.alertNotImplemented.setHeaderText("Current Users");
+	        ViewAdminHome.alertNotImplemented.setContentText(userList.toString());
+	        ViewAdminHome.alertNotImplemented.showAndWait();
+
+	    } catch (Exception e) {
+	        System.out.println("\n*** ERROR ***: Unable to list users");
+	        e.printStackTrace();
+	        ViewAdminHome.alertNotImplemented.setTitle("*** ERROR ***");
+	        ViewAdminHome.alertNotImplemented.setHeaderText("Database Issue");
+	        ViewAdminHome.alertNotImplemented.setContentText("Unable to retrieve user list.");
+	        ViewAdminHome.alertNotImplemented.showAndWait();
+	    }
+		*/
+>>>>>>> 8cf6477 (what):TP1/TP1 Source Code/TP1 Base code/src/guiAdminHome/ControllerAdminHome.java
 		
 		try {
 	        // Get list of User objects from the database
@@ -205,6 +271,7 @@ public class ControllerAdminHome {
 	        StringBuilder userList = new StringBuilder();
 	        for (User user : users) {
 	            userList.append("Username: ").append(user.getUserName())
+<<<<<<< HEAD:TP1/src/guiAdminHome/ControllerAdminHome.java
 	                    .append("\nEmail: ").append(user.getEmailAddress())
 	                    .append("\nName: ").append(user.getFirstName())
 	                    .append(" ").append(user.getLastName());
@@ -221,6 +288,18 @@ public class ControllerAdminHome {
 	            if (user.getNewRole2()) userList.append("Role2 ");
 
 	            userList.append("\n\n\n\n\n");
+=======
+	                    .append(", Email: ").append(user.getEmailAddress())
+	                    .append(", Name: ").append(user.getPreferredFirstName())
+	                    .append(" ").append(user.getLastName())
+	                    .append(", Roles: ");
+	            
+	            if (user.getAdminRole()) userList.append("Admin ");
+	            if (user.getNewRole1()) userList.append("Role1 ");
+	            if (user.getNewRole2()) userList.append("Role2 ");
+	            
+	            userList.append("\n");
+>>>>>>> 8cf6477 (what):TP1/TP1 Source Code/TP1 Base code/src/guiAdminHome/ControllerAdminHome.java
 	        }
 
 	        // Create a scrollable TextArea to display the users
@@ -281,6 +360,7 @@ public class ControllerAdminHome {
 	 * @param emailAddress	This String holds what is expected to be an email address
 	 */
 	protected static boolean invalidEmailAddress(String emailAddress) {
+<<<<<<< HEAD:TP1/src/guiAdminHome/ControllerAdminHome.java
 	    // Call the FSM recognizer
 	    String errorMsg = EmailAddressRecognizer.checkEmailAddress(emailAddress);
 
@@ -292,6 +372,15 @@ public class ControllerAdminHome {
 	    }
 
 	    return false; // valid
+=======
+		if (emailAddress.length() == 0) {
+			ViewAdminHome.alertEmailError.setContentText(
+					"Correct the email address and try again.");
+			ViewAdminHome.alertEmailError.showAndWait();
+			return true;
+		}
+		return false;
+>>>>>>> 8cf6477 (what):TP1/TP1 Source Code/TP1 Base code/src/guiAdminHome/ControllerAdminHome.java
 	}
 	
 	/**********
@@ -623,4 +712,8 @@ public class ControllerAdminHome {
 		System.exit(0);
 	}
 }
+<<<<<<< HEAD:TP1/src/guiAdminHome/ControllerAdminHome.java
 >>>>>>> cc8a1ad (hope this don't break it):TP1/TP1 Source Code/TP1 Base code/src/guiAdminHome/ControllerAdminHome.java
+=======
+>>>>>>> main
+>>>>>>> 8cf6477 (what):TP1/TP1 Source Code/TP1 Base code/src/guiAdminHome/ControllerAdminHome.java
