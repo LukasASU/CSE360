@@ -34,8 +34,7 @@ public class ControllerNewAccount {
 	 */	
 	protected static void doCreateUser() {
 		
-		// Fetch the username and password. (We use the first of the two here, but we will validate
-		// that the two password fields are the same before we do anything with it.)
+		// Fetch the username and password.
 		String username = ViewNewAccount.text_Username.getText();
 		String password = ViewNewAccount.text_Password1.getText();
 		
@@ -55,7 +54,7 @@ public class ControllerNewAccount {
 	        return;
 	    }
 	    
-	    
+		
 		// Display key information to the log
 		System.out.println("** Account for Username: " + username + "; theInvitationCode: "+
 				ViewNewAccount.theInvitationCode + "; email address: " + 
@@ -87,30 +86,35 @@ public class ControllerNewAccount {
 			}
 			
 			// Unlike the FirstAdmin, we know the email address, so set that into the user as well.
-        	user.setEmailAddress(ViewNewAccount.emailAddress);
+	    	user.setEmailAddress(ViewNewAccount.emailAddress);
 
-        	// Inform the system about which role will be played
+	    	// Inform the system about which role will be played
 			applicationMain.FoundationsMain.activeHomePage = roleCode;
 			
-        	// Create the account based on user and proceed to the user account update page
-            try {
-            	// Create a new User object with the pre-set role and register in the database
-            	theDatabase.register(user);
-            } catch (SQLException e) {
-                System.err.println("*** ERROR *** Database error: " + e.getMessage());
-                e.printStackTrace();
-                System.exit(0);
-            }
-            
-            // The account has been set, so remove the invitation from the system
-            theDatabase.removeInvitationAfterUse(
-            		ViewNewAccount.text_Invitation.getText());
-            
-            // Set the database so it has this user and the current user
-            theDatabase.getUserAccountDetails(username);
+	    	// Create the account based on user and register in the database
+	        try {
+	        	theDatabase.register(user);
+	        } catch (SQLException e) {
+	            System.err.println("*** ERROR *** Database error: " + e.getMessage());
+	            e.printStackTrace();
+	            System.exit(0);
+	        }
+	        
+	        // The account has been set, so remove the invitation from the system
+	        theDatabase.removeInvitationAfterUse(ViewNewAccount.theInvitationCode);
+	        
+	        // Now, we display a success alert and redirect the user back to the login page.
+	        // We do NOT automatically log them in or send them to the user update page.
+	        
+	        // Show success alert
+	        ViewNewAccount.alertInvitationCodeIsInvalid.setTitle("Account Created");
+	        ViewNewAccount.alertInvitationCodeIsInvalid.setHeaderText(null);
+	        ViewNewAccount.alertInvitationCodeIsInvalid.setContentText("Your account has been created. Please log in with your new credentials.");
+	        ViewNewAccount.alertInvitationCodeIsInvalid.showAndWait();
+	        
+	        // Redirect to the login page 
+	        guiUserLogin.ViewUserLogin.displayUserLogin(ViewNewAccount.theStage);
 
-            // Navigate to the Welcome Login Page
-            guiUserUpdate.ViewUserUpdate.displayUserUpdate(ViewNewAccount.theStage, user);
 		}
 		else {
 			// The two passwords are NOT the same, so clear the passwords, explain the passwords

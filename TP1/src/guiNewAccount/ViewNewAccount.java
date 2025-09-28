@@ -13,6 +13,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import database.Database;
 import entityClasses.User;
+import java.time.*;
 
 /*******
  * <p> Title: ViewNewAccount Class. </p>
@@ -129,6 +130,34 @@ public class ViewNewAccount {
 			alertInvitationCodeIsInvalid.showAndWait();	// dialog box saying that are when it it
 			return;					// acknowledged, return so the proper code can be entered
 		}
+		
+		
+		String expirationDate = theDatabase.getExpirationGivenAnInvitationCode(theInvitationCode);
+
+
+        //parse the expiration date for day of the year and hour
+
+        int day;
+        int hour;
+        if(expirationDate.charAt(2) == '/') {
+            day = Integer.parseInt(expirationDate.substring(0, 2));
+            hour = Integer.parseInt(expirationDate.substring(3));
+        }
+        else {
+            day = Integer.parseInt(expirationDate.substring(0, 3));
+            hour = Integer.parseInt(expirationDate.substring(4));
+        }
+
+        if(LocalDateTime.now().getDayOfYear() > day || 
+                (LocalDateTime.now().getDayOfYear() == day && LocalDateTime.now().getHour() > hour)) {
+            alertInvitationCodeIsInvalid.setContentText("The invitation code has expired");
+            alertInvitationCodeIsInvalid.showAndWait();
+            alertInvitationCodeIsInvalid.setContentText("Correct the code and try again."); //change to default
+            return; // Add comment!
+        }
+		
+		
+		
 		
 		// Get the email address associated with the invitation code
 		emailAddress = theDatabase.getEmailAddressUsingCode(theInvitationCode);
